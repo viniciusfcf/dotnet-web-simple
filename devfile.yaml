@@ -1,51 +1,57 @@
 schemaVersion: 2.2.2
 metadata:
-  name: dotnet
+  name: dotnet80
+  displayName: .NET 8.0
+  description: .NET 8.0 application
+  icon: https://github.com/dotnet/brand/raw/main/logo/dotnet-logo.png
+  tags:
+    - .NET
+    - .NET 8.0
+  projectType: dotnet
+  language: .NET
+  version: 1.0.0
+starterProjects:
+  - name: dotnet80-example
+    git:
+      checkoutFrom:
+        remote: origin
+        revision: dotnet-8.0
+      remotes:
+        origin: https://github.com/redhat-developer/s2i-dotnetcore-ex
+    subDir: app
 components:
-  - name: tools
+  - name: dotnet
     container:
-      #  quay.io/devspaces/dotnet-90:9.0-fedora-20250415-095811
-      # image: quay.io/devspaces/dotnet-90@sha256:5cb201f58ebf20d76b7b99e013da46aa6cfe594c5763ab873bcc6436965d7859
-      # image: quay.io/vsvydenk/dotnet:7.0-UBI-9
       image: registry.access.redhat.com/ubi8/dotnet-80:8.0-13
-      memoryLimit: '2Gi'
-      memoryRequest: '1Gi'
-      cpuLimit: '1'
-      cpuRequest: '0.5'
+      args: ["tail", "-f", "/dev/null"]
       mountSources: true
+      env:
+        - name: CONFIGURATION
+          value: Debug
+        - name: STARTUP_PROJECT
+          value: app.csproj
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://*:8080
       endpoints:
-        - exposure: public
-          name: 'hello-endpoint'
+        - name: https-dotnet80
           protocol: https
-          targetPort: 5032
-      volumeMounts:
-        - name: nuget
-          path: /home/user/.nuget
-  - name: nuget
-    volume:
-      size: 1G
+          targetPort: 8080
 commands:
-  - id: 1-update-dependencies
+  - id: build
     exec:
-      label: 1.Update dependencies
-      component: tools
-      workingDir: ${PROJECTS_ROOT}/dotnet-web-simple
-      commandLine: "dotnet restore"
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: kill $(pidof dotnet); dotnet build -c $CONFIGURATION $STARTUP_PROJECT /p:UseSharedCompilation=false
+      component: dotnet
       group:
+        isDefault: true
         kind: build
-  - id: 2-build
+  - id: run
     exec:
-      label: 2.Build
-      component: tools
-      workingDir: ${PROJECTS_ROOT}/dotnet-web-simple
-      commandLine: "dotnet build"
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: dotnet run -c $CONFIGURATION --no-build --project $STARTUP_PROJECT --no-launch-profile
+      component: dotnet
       group:
-        kind: build
-  - id: 3-run
-    exec:
-      label: 3.Run
-      component: tools
-      workingDir: ${PROJECTS_ROOT}/dotnet-web-simple
-      commandLine: "dotnet run"
-      group:
+        isDefault: true
         kind: run

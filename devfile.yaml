@@ -24,6 +24,14 @@ components:
           value: Development
         - name: ASPNETCORE_URLS
           value: http://*:8080
+        - name: QUARKUS_HTTP_HOST
+          value: 0.0.0.0
+        - name: KUBEDOCK_PARAMS
+          value: "--reverse-proxy --kubeconfig /home/user/.kube/config --initimage quay.io/agiertli/kubedock:0.13.0"
+        - name: KUBEDOCK_ENABLED
+          value: 'true'
+        - name: DOCKER_HOST
+          value: 'tcp://127.0.0.1:2475'
       endpoints:
         - name: https-dotnet80
           protocol: https

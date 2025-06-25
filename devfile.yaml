@@ -10,15 +10,6 @@ metadata:
   projectType: dotnet
   language: .NET
   version: 1.0.0
-starterProjects:
-  - name: dotnet80-example
-    git:
-      checkoutFrom:
-        remote: origin
-        revision: dotnet-8.0
-      remotes:
-        origin: https://github.com/redhat-developer/s2i-dotnetcore-ex
-    subDir: app
 components:
   - name: dotnet
     container:

@@ -1,6 +1,6 @@
 schemaVersion: 2.2.2
 metadata:
-  name: dotnet80
+  name: dotnet-80
   displayName: .NET 8.0
   description: .NET 8.0 application
   tags:
@@ -24,8 +24,6 @@ components:
           value: Development
         - name: ASPNETCORE_URLS
           value: http://*:8080
-        - name: QUARKUS_HTTP_HOST
-          value: 0.0.0.0
         - name: KUBEDOCK_PARAMS
           value: "--reverse-proxy --kubeconfig /home/user/.kube/config --initimage quay.io/agiertli/kubedock:0.13.0"
         - name: KUBEDOCK_ENABLED
